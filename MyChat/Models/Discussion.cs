@@ -6,5 +6,6 @@
         public string Title { get; set; }
         public List<Message> Messages { get; set; }
         public int ChannelId { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }
