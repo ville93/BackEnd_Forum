@@ -23,5 +23,12 @@ namespace MyChat.Services
         {
             return _discussions.OrderByDescending(d => d.Messages.Count).ToList();
         }
+
+        public List<Discussion> GetSearchedDiscussion(string searchTerm)
+        {
+            return _discussions
+                .Where(d => d.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
     }
 }

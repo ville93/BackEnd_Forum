@@ -3,6 +3,7 @@ using MyChat.Models;
 using MyChat.Services;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Channels;
 
 namespace MyChat.Controllers
 {
@@ -74,6 +75,18 @@ namespace MyChat.Controllers
         {
             var popularDiscussions = _discussionService.GetPopularDiscussions();
             return Ok(popularDiscussions);
+        }
+
+        [HttpGet("search")]
+        public ActionResult<IEnumerable<Discussion>> SearchDiscussions(string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return BadRequest("Search term cannot be empty.");
+            }
+
+            var results = _discussionService.GetSearchedDiscussion(searchTerm);
+            return Ok(results);
         }
     }
 }

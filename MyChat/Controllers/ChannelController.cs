@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyChat.Models;
+using MyChat.Services;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,6 +15,12 @@ namespace MyChat.Controllers
             new Channel { Id = 1, Name = "General" },
             new Channel { Id = 2, Name = "Random" },
         ];
+
+        private readonly ChannelService _channelService;
+        public ChannelController(ChannelService channelService)
+        {
+            _channelService = channelService;
+        }
 
         [HttpGet]
         public ActionResult<IEnumerable<Channel>> GetChannels()
@@ -73,6 +80,18 @@ namespace MyChat.Controllers
             _channels.Remove(channelToRemove);
 
             return NoContent();
+        }
+
+        [HttpGet("searchChannels")]
+        public ActionResult<IEnumerable<Channel>> SearchChannels(string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return BadRequest("Search term cannot be empty.");
+            }
+
+            var results = _channelService.GetSerchedChannels(searchTerm);
+            return Ok(results);
         }
     }
 }
