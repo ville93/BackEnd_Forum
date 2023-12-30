@@ -1,4 +1,5 @@
-﻿using MyChat.Models;
+﻿using MyChat.Controllers;
+using MyChat.Models;
 
 namespace MyChat.Services
 {
