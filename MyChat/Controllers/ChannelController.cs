@@ -19,9 +19,28 @@ namespace MyChat.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Channel>>> GetChannels()
         {
-            var channels = await _context.Channels.Include(c => c.Discussions).ThenInclude(d => d.Messages).ToListAsync();
+            var channels = await _context.Channels
+                .Include(c => c.Discussions)
+                .ThenInclude(d => d.Messages)
+                .Select(c => new Channel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Discussions = c.Discussions.Select(d => new Discussion
+                    {
+                        Id = d.Id,
+                        Title = d.Title,
+                        ChannelId = d.ChannelId,
+                        CreatedAt = d.CreatedAt,
+                        Messages = d.Messages.OrderByDescending(m => m.Timestamp).Take(1).ToList(),
+                        AnswersCount = d.Messages.Count 
+                    }).ToList()
+                })
+                .ToListAsync();
+
             return Ok(channels);
         }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Channel>> GetChannel(int id)

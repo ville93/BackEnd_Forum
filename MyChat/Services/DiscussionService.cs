@@ -19,12 +19,22 @@ namespace MyChat.Services
         public List<Discussion> GetNewestDiscussions()
         {
             var discussionsWithMessages = _context.Discussions
-            .OrderByDescending(d => d.CreatedAt).Take(10)
-            .Include(d => d.Messages.OrderBy(m => m.Id).Take(1))
-            .ToList();
+                .OrderByDescending(d => d.CreatedAt)
+                .Take(10)
+                .Select(d => new Discussion
+                {
+                    Id = d.Id,
+                    Title = d.Title,
+                    ChannelId = d.ChannelId,
+                    CreatedAt = d.CreatedAt,
+                    Messages = d.Messages.OrderByDescending(m => m.Timestamp).Take(1).ToList(), 
+                    AnswersCount = d.Messages.Count 
+                })
+                .ToList();
 
             return discussionsWithMessages;
         }
+
 
         public List<Discussion> GetPopularDiscussions()
         {
