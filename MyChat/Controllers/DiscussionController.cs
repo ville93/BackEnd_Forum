@@ -85,8 +85,9 @@ namespace MyChat.Controllers
                 return BadRequest("Search term cannot be empty.");
             }
 
-            var results = _discussionService.GetSearchedDiscussion(searchTerm);
+            var results = _discussionService.GetSearchedDiscussion(searchTerm).AsEnumerable();
             return Ok(results);
         }
+
     }
 }

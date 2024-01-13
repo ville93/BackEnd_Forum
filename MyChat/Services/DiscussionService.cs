@@ -21,20 +21,20 @@ namespace MyChat.Services
             var discussionsWithMessages = _context.Discussions
                 .OrderByDescending(d => d.CreatedAt)
                 .Take(10)
+                .Include(d => d.Messages)  // Lataa viestit keskusteluun
                 .Select(d => new Discussion
                 {
                     Id = d.Id,
                     Title = d.Title,
                     ChannelId = d.ChannelId,
                     CreatedAt = d.CreatedAt,
-                    Messages = d.Messages.OrderByDescending(m => m.Timestamp).Take(1).ToList(), 
-                    AnswersCount = d.Messages.Count 
+                    Messages = d.Messages.OrderByDescending(m => m.Timestamp).Take(1).ToList(),
+                    AnswersCount = d.Messages.Count
                 })
                 .ToList();
 
             return discussionsWithMessages;
         }
-
 
         public List<Discussion> GetPopularDiscussions()
         {
@@ -45,9 +45,17 @@ namespace MyChat.Services
 
         public List<Discussion> GetSearchedDiscussion(string searchTerm)
         {
-            return _context.Discussions
-                .Where(d => d.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+            var discussionsWithMessages = _context.Discussions
+                .Include(d => d.Messages)  
+                .Where(d => EF.Functions.Like(d.Title, $"%{searchTerm}%"))
                 .ToList();
+
+            foreach (var discussion in discussionsWithMessages)
+            {
+                discussion.AnswersCount = discussion.Messages.Count;
+            }
+
+            return discussionsWithMessages;
         }
     }
 }

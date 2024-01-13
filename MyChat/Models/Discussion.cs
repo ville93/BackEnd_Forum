@@ -1,4 +1,6 @@
-﻿namespace MyChat.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MyChat.Models
 {
     public class Discussion
     {
@@ -7,6 +9,8 @@
         public List<Message> Messages { get; set; }
         public int ChannelId { get; set; }
         public DateTime CreatedAt { get; set; }
+
+        [NotMapped]
         public int AnswersCount { get; set; }
     }
 }

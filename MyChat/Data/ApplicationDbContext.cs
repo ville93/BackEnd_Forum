@@ -46,7 +46,7 @@ namespace MyChat.Data
                 new Channel
                 {
                     Id = 6,
-                    Name = "Football Fever",
+                    Name = "Sports",
                 }
             );
 
