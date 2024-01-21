@@ -21,7 +21,7 @@ namespace MyChat.Services
             var discussionsWithMessages = _context.Discussions
                 .OrderByDescending(d => d.CreatedAt)
                 .Take(10)
-                .Include(d => d.Messages)  // Lataa viestit keskusteluun
+                .Include(d => d.Messages)  
                 .Select(d => new Discussion
                 {
                     Id = d.Id,

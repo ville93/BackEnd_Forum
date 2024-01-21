@@ -41,7 +41,6 @@ namespace MyChat.Controllers
         [HttpPost]
         public ActionResult<Discussion> AddDiscussion([FromBody] Discussion newDiscussion)
         {
-            // Voit lisätä tarkistuksia uuden keskustelun lisäämiseen tarvittaessa
             newDiscussion.Id = _discussions.Count + 1;
             _discussions.Add(newDiscussion);
 

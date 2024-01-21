@@ -11,7 +11,7 @@ namespace MyChat.Mocks
 
             configuration.SetupGet(x => x["JwtKey"]).Returns("your_secret_key");
             configuration.SetupGet(x => x["JwtIssuer"]).Returns("your_issuer");
-            configuration.SetupGet(x => x["JwtExpireDays"]).Returns("1"); // Muuta vanhentumispäiviä tarvittaessa
+            configuration.SetupGet(x => x["JwtExpireDays"]).Returns("1"); 
 
             return configuration;
         }

@@ -31,11 +31,9 @@ namespace MyChat.Controllers
         [HttpPost]
         public ActionResult<Message> AddMessage([FromBody] Message newMessage)
         {
-            // Voit lisätä tarkistuksia uuden viestin lisäämiseen tarvittaessa
             newMessage.Id = _messages.Count + 1;
             newMessage.Timestamp = DateTime.Now;
             _messages.Add(newMessage);
-
             return CreatedAtAction(nameof(GetMessage), new { id = newMessage.Id }, newMessage);
         }
 

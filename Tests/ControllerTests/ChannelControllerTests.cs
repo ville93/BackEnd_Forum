@@ -13,7 +13,7 @@ namespace MyChat.Tests.ControllerTests
         public void GetChannels_ShouldReturnAllChannels()
         {
             // Arrange
-            var channelService = new ChannelService(); // Simuloi ChannelService
+            var channelService = new ChannelService(); 
             var controller = new ChannelController(channelService);
 
             // Act
