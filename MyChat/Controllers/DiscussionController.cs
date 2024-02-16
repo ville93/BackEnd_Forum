@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using MyChat.Models;
 using MyChat.Services;
 using System.Collections.Generic;
@@ -22,14 +23,14 @@ namespace MyChat.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Discussion>> GetDiscussions()
         {
-            return Ok(_discussions);
+            var discussions = _discussionService.GetAll();
+            return Ok(discussions);
         }
 
         [HttpGet("{id}")]
         public ActionResult<Discussion> GetDiscussion(int id)
         {
-            var discussion = _discussions.FirstOrDefault(d => d.Id == id);
-
+            var discussion = _discussionService.GetDiscussionById(id);
             if (discussion == null)
             {
                 return NotFound();

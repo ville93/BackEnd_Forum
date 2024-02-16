@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyChat.Data;
 using MyChat.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MyChat.Services
 {
@@ -14,6 +11,17 @@ namespace MyChat.Services
         public DiscussionService(ApplicationDbContext context)
         {
             _context = context;
+        }
+        public List<Discussion> GetAll()
+        {
+            return _context.Discussions.ToList();
+        }
+
+        public Discussion GetDiscussionById(int id)
+        {
+            return _context.Discussions
+                .Include(d => d.Messages)
+                .FirstOrDefault(d => d.Id == id);
         }
 
         public List<Discussion> GetNewestDiscussions()
