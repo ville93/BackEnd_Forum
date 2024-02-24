@@ -12,6 +12,7 @@ namespace MyChat.Services
         {
             _context = context;
         }
+
         public List<Discussion> GetAll()
         {
             return _context.Discussions.ToList();
@@ -24,60 +25,70 @@ namespace MyChat.Services
                 .FirstOrDefault(d => d.Id == id);
         }
 
+        public Discussion AddDiscussion(Discussion newDiscussion)
+        {
+            if (newDiscussion == null)
+            {
+                throw new ArgumentNullException(nameof(newDiscussion));
+            }
+
+            newDiscussion.CreatedAt = DateTime.Now;
+            _context.Discussions.Add(newDiscussion);
+            _context.SaveChanges();
+
+            if (newDiscussion.Messages != null && newDiscussion.Messages.Any())
+            {
+                foreach (var message in newDiscussion.Messages)
+                {
+                    message.Timestamp = DateTime.Now;
+                    message.DiscussionId = newDiscussion.Id;
+                    _context.Messages.Add(message);
+                }
+                _context.SaveChanges();
+            }
+
+            return newDiscussion;
+        }
+
+        public bool DeleteDiscussion(int id)
+        {
+            var discussionToRemove = _context.Discussions.FirstOrDefault(d => d.Id == id);
+
+            if (discussionToRemove == null)
+            {
+                return false;
+            }
+
+            _context.Discussions.Remove(discussionToRemove);
+            _context.SaveChanges();
+
+            return true;
+        }
+
         public List<Discussion> GetNewestDiscussions()
         {
-            var discussionsWithMessages = _context.Discussions
+            return _context.Discussions
                 .OrderByDescending(d => d.CreatedAt)
                 .Take(10)
-                .Include(d => d.Messages)  
-                .Select(d => new Discussion
-                {
-                    Id = d.Id,
-                    Title = d.Title,
-                    ChannelId = d.ChannelId,
-                    CreatedAt = d.CreatedAt,
-                    Messages = d.Messages.OrderByDescending(m => m.Timestamp).Take(1).ToList(),
-                    AnswersCount = d.Messages.Count
-                })
+                .Include(d => d.Messages)
                 .ToList();
-
-            return discussionsWithMessages;
         }
 
         public List<Discussion> GetPopularDiscussions()
         {
-            var discussionsWithMessages = _context.Discussions
-                .OrderByDescending(d => d.Messages.Count) 
+            return _context.Discussions
+                .OrderByDescending(d => d.Messages.Count)
                 .Take(10)
                 .Include(d => d.Messages)
-                .Select(d => new Discussion
-                {
-                    Id = d.Id,
-                    Title = d.Title,
-                    ChannelId = d.ChannelId,
-                    CreatedAt = d.CreatedAt,
-                    Messages = d.Messages.OrderByDescending(m => m.Timestamp).Take(1).ToList(),
-                    AnswersCount = d.Messages.Count
-                })
                 .ToList();
-
-            return discussionsWithMessages;
         }
-
 
         public List<Discussion> GetSearchedDiscussion(string searchTerm)
         {
-            var discussionsWithMessages = _context.Discussions
-                .Include(d => d.Messages)  
+            return _context.Discussions
+                .Include(d => d.Messages)
                 .Where(d => EF.Functions.Like(d.Title, $"%{searchTerm}%"))
                 .ToList();
-
-            foreach (var discussion in discussionsWithMessages)
-            {
-                discussion.AnswersCount = discussion.Messages.Count;
-            }
-
-            return discussionsWithMessages;
         }
     }
 }

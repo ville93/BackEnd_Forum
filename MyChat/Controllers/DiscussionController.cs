@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic;
 using MyChat.Models;
 using MyChat.Services;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Channels;
 
 namespace MyChat.Controllers
 {
@@ -12,7 +8,6 @@ namespace MyChat.Controllers
     [ApiController]
     public class DiscussionController : ControllerBase
     {
-        private readonly List<Discussion> _discussions = new List<Discussion>();
         private readonly DiscussionService _discussionService;
 
         public DiscussionController(DiscussionService discussionService)
@@ -42,23 +37,25 @@ namespace MyChat.Controllers
         [HttpPost]
         public ActionResult<Discussion> AddDiscussion([FromBody] Discussion newDiscussion)
         {
-            newDiscussion.Id = _discussions.Count + 1;
-            _discussions.Add(newDiscussion);
-
-            return CreatedAtAction(nameof(GetDiscussion), new { id = newDiscussion.Id }, newDiscussion);
+            try
+            {
+                var addedDiscussion = _discussionService.AddDiscussion(newDiscussion);
+                return CreatedAtAction(nameof(GetDiscussion), new { id = addedDiscussion.Id }, addedDiscussion);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while adding the discussion.");
+            }
         }
 
         [HttpDelete("{id}")]
         public ActionResult DeleteDiscussion(int id)
         {
-            var discussionToRemove = _discussions.FirstOrDefault(d => d.Id == id);
-
-            if (discussionToRemove == null)
+            var success = _discussionService.DeleteDiscussion(id);
+            if (!success)
             {
                 return NotFound();
             }
-
-            _discussions.Remove(discussionToRemove);
 
             return NoContent();
         }
@@ -85,9 +82,8 @@ namespace MyChat.Controllers
                 return BadRequest("Search term cannot be empty.");
             }
 
-            var results = _discussionService.GetSearchedDiscussion(searchTerm).AsEnumerable();
+            var results = _discussionService.GetSearchedDiscussion(searchTerm);
             return Ok(results);
         }
-
     }
 }
