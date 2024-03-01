@@ -34,7 +34,6 @@ namespace MyChat.Services
 
             newDiscussion.CreatedAt = DateTime.Now;
             _context.Discussions.Add(newDiscussion);
-            _context.SaveChanges();
 
             if (newDiscussion.Messages != null && newDiscussion.Messages.Any())
             {
@@ -44,11 +43,13 @@ namespace MyChat.Services
                     message.DiscussionId = newDiscussion.Id;
                     _context.Messages.Add(message);
                 }
-                _context.SaveChanges();
             }
+
+            _context.SaveChanges();
 
             return newDiscussion;
         }
+
 
         public bool DeleteDiscussion(int id)
         {
