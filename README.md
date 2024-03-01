@@ -6,9 +6,9 @@ Note! The implementation of the application is still in progress
 
 ## The technologies used in the implementation
 
-C#
-.NET
-ASP.NET Core
-EF Core
-JSON Web Token (JWT) authentication
-xUnit
+1. C#
+2. .NET
+3. ASP.NET Core
+4. EF Core
+5. JSON Web Token (JWT) authentication
+6. xUnit
