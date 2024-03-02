@@ -9,10 +9,12 @@ namespace MyChat.Controllers
     public class DiscussionController : ControllerBase
     {
         private readonly DiscussionService _discussionService;
+        private readonly MessageService _messageService;
 
-        public DiscussionController(DiscussionService discussionService)
+        public DiscussionController(DiscussionService discussionService, MessageService messageService)
         {
             _discussionService = discussionService;
+            _messageService = messageService;
         }
 
         [HttpGet]
@@ -84,6 +86,32 @@ namespace MyChat.Controllers
 
             var results = _discussionService.GetSearchedDiscussion(searchTerm);
             return Ok(results);
+        }
+
+        [HttpGet("message/{id}")]
+        public ActionResult<Message> GetMessage(int id)
+        {
+            var message = _messageService.GetMessageById(id);
+            if (message == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(message);
+        }
+
+        [HttpPost("{discussionId}")]
+        public ActionResult<Message> AddMessageToDiscussion(int discussionId, [FromBody] Message newMessage)
+        {
+            try
+            {
+                var addedMessage = _messageService.AddMessage(newMessage, discussionId);
+                return CreatedAtAction(nameof(GetMessage), new { id = addedMessage.Id }, addedMessage);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while adding the message.");
+            }
         }
     }
 }

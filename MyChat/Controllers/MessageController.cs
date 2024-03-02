@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyChat.Models;
+using MyChat.Services;
 
 namespace MyChat.Controllers
 {
@@ -8,6 +9,12 @@ namespace MyChat.Controllers
     public class MessageController : ControllerBase
     {
         private readonly List<Message> _messages = new List<Message>();
+
+        private readonly MessageService _messageService;
+        public MessageController(MessageService messageService)
+        {
+            _messageService = messageService;
+        }
 
         [HttpGet]
         public ActionResult<IEnumerable<Message>> GetMessages()
@@ -26,30 +33,6 @@ namespace MyChat.Controllers
             }
 
             return Ok(message);
-        }
-
-        [HttpPost]
-        public ActionResult<Message> AddMessage([FromBody] Message newMessage)
-        {
-            newMessage.Id = _messages.Count + 1;
-            newMessage.Timestamp = DateTime.Now;
-            _messages.Add(newMessage);
-            return CreatedAtAction(nameof(GetMessage), new { id = newMessage.Id }, newMessage);
-        }
-
-        [HttpDelete("{id}")]
-        public ActionResult DeleteMessage(int id)
-        {
-            var messageToRemove = _messages.FirstOrDefault(m => m.Id == id);
-
-            if (messageToRemove == null)
-            {
-                return NotFound();
-            }
-
-            _messages.Remove(messageToRemove);
-
-            return NoContent();
         }
     }
 }
