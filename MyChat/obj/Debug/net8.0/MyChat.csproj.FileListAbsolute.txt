@@ -138,3 +138,4 @@ C:\Opiskelu\Keskustelupalsta\MyChat\MyChat\obj\Debug\net8.0\refint\MyChat.dll
 C:\Opiskelu\Keskustelupalsta\MyChat\MyChat\obj\Debug\net8.0\MyChat.pdb
 C:\Opiskelu\Keskustelupalsta\MyChat\MyChat\obj\Debug\net8.0\MyChat.genruntimeconfig.cache
 C:\Opiskelu\Keskustelupalsta\MyChat\MyChat\obj\Debug\net8.0\ref\MyChat.dll
+C:\Opiskelu\Keskustelupalsta\MyChat\MyChat\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.dll

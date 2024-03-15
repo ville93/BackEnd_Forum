@@ -153,3 +153,4 @@ C:\Opiskelu\Keskustelupalsta\MyChat\Tests\obj\Debug\net8.0\refint\Tests.dll
 C:\Opiskelu\Keskustelupalsta\MyChat\Tests\obj\Debug\net8.0\Tests.pdb
 C:\Opiskelu\Keskustelupalsta\MyChat\Tests\obj\Debug\net8.0\Tests.genruntimeconfig.cache
 C:\Opiskelu\Keskustelupalsta\MyChat\Tests\obj\Debug\net8.0\ref\Tests.dll
+C:\Opiskelu\Keskustelupalsta\MyChat\Tests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.dll

@@ -5,11 +5,20 @@ using MyChat.Models;
 
 namespace MyChat.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+    public interface IApplicationDbContext
+    {
+        DbSet<Discussion> Discussions { get; set; }
+        DbSet<User> ApplicationUsers { get; set; }
+        DbSet<Message> Messages { get; set; }
+        DbSet<Channel> Channels { get; set; }
+        int SaveChanges();
+    }
+
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>, IApplicationDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<User> ApplicationUsers { get; set; }
-        public DbSet<Discussion> Discussions { get; set; }
+        public virtual DbSet<Discussion> Discussions { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Channel> Channels { get; set; }
 

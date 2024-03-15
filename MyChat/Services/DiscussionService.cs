@@ -6,9 +6,9 @@ namespace MyChat.Services
 {
     public class DiscussionService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IApplicationDbContext _context;
 
-        public DiscussionService(ApplicationDbContext context)
+        public DiscussionService(IApplicationDbContext context)
         {
             _context = context;
         }
