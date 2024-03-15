@@ -68,20 +68,34 @@ namespace MyChat.Services
 
         public List<Discussion> GetNewestDiscussions()
         {
-            return _context.Discussions
+            var discussions = _context.Discussions
                 .OrderByDescending(d => d.CreatedAt)
                 .Take(10)
                 .Include(d => d.Messages)
                 .ToList();
+
+            foreach (var discussion in discussions)
+            {
+                discussion.AnswersCount = discussion.Messages.Count;
+            }
+
+            return discussions;
         }
 
         public List<Discussion> GetPopularDiscussions()
         {
-            return _context.Discussions
+            var discussions = _context.Discussions
                 .OrderByDescending(d => d.Messages.Count)
                 .Take(10)
                 .Include(d => d.Messages)
                 .ToList();
+
+            foreach (var discussion in discussions)
+            {
+                discussion.AnswersCount = discussion.Messages.Count;
+            }
+
+            return discussions;
         }
 
         public List<Discussion> GetSearchedDiscussion(string searchTerm)
