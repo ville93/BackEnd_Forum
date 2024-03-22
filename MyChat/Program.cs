@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using MyChat.Data;
 using MyChat.Services;
 using MyChat.Settings;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,10 +21,10 @@ builder.Services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 builder.Services.AddScoped<DiscussionService>();
 builder.Services.AddScoped<ChannelService>();
 builder.Services.AddScoped<MessageService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.Configure<IdentityOptions>(options =>
 {
     // Konfiguroi salasanan vaatimukset t‰‰ll‰ tarvittaessa
@@ -81,5 +81,5 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers(); 
+app.MapControllers();
 app.Run();
