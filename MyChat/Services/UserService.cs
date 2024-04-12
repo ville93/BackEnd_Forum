@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using MyChat.Settings;
 
 namespace MyChat.Services
 {
@@ -32,7 +33,9 @@ namespace MyChat.Services
 
             if (result.Succeeded)
             {
-                return new OkObjectResult(new { Message = "Registration successful" });
+                var token = GenerateJwtToken(user);
+                var responseDTO = new LoginResponseDTO { Token = token };
+                return new OkObjectResult(responseDTO);
             }
 
             return new BadRequestObjectResult(new { Message = "Registration failed", Errors = result.Errors });
@@ -45,7 +48,7 @@ namespace MyChat.Services
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 var token = GenerateJwtToken(user);
-                var responseDTO = new LoginResponseDTO { Token = token };
+                var responseDTO = new LoginResponseDTO { Email = model.Email, Token = token };
                 return new OkObjectResult(responseDTO);
             }
 
@@ -54,19 +57,21 @@ namespace MyChat.Services
 
         private string GenerateJwtToken(IdentityUser user)
         {
+            var jwtSettings = _configuration.GetSection("JwtSettings").Get<JwtSettings>();
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName),
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["JwtExpireDays"]));
+            var expires = DateTime.Now.AddDays(jwtSettings.MinutesToExpiration);
 
             var token = new JwtSecurityToken(
-                _configuration["JwtIssuer"],
-                _configuration["JwtIssuer"],
+                jwtSettings.Issuer,
+                jwtSettings.Audience,
                 claims,
                 expires: expires,
                 signingCredentials: creds
